@@ -88,7 +88,7 @@ class FallingCat:
             return self.psi
         return np.interp(theta, self.theta, self.psi)
 
-    def plot(self, theta, l=5, N=32, color=None, leg_color=None, **kw):
+    def plot(self, theta, l=5, N=32, color=None, leg_color=None, ax=None, **kw):
         """
         theta = angle between A3 and B3 in fig2 of Kane & Scher
         l = length of each cylinder
@@ -105,37 +105,44 @@ class FallingCat:
         cgm, sgm = np.cos(gam / 2), np.sin(gam / 2)
         cps, sps = np.cos(psi), np.sin(psi)
 
-        ax = plt.gca()
+        if ax is None:
+            ax = plt.gca()
+
         # plot cylinders
         u, v = np.mgrid[0 : l : N * 1j, 0 : 2 * np.pi : N * 1j]
+
         # front cylinder
         y = -u
         z, x = np.cos(v), np.sin(v)
         y, z = y * cgm + z * sgm, -y * sgm + z * cgm
         z, x = z * cps - x * sps, z * sps + x * cps
         ax.plot_surface(x, y, z, color=color)
+
         # rear cylinder
         y = u
         z, x = np.cos(v), np.sin(v)
         y, z = y * cgm - z * sgm, y * sgm + z * cgm
         z, x = z * cps - x * sps, z * sps + x * cps
         ax.plot_surface(x, y, z, color=color)
+
         # plot legs
         u = np.asarray([1, 1]) * l / 2
         v = np.asarray([1, -1]) * np.pi / 12
+
         # front legs
         y = -u
         z, x = np.cos(v), np.sin(v)
         z, x = z * cph - x * sph, z * sph + x * cph
         y, z = y * cgm + z * sgm, -y * sgm + z * cgm
         z, x = z * cps - x * sps, z * sps + x * cps
-        ax.plot(x, y, z, leg_color, **kw)
+        ax.scatter(x, y, z, c=leg_color, **kw)
+
         # rear legs
         y = u
         z, x = np.cos(v), np.sin(v)
         z, x = z * cph - x * sph, z * sph + x * cph
         y, z = y * cgm - z * sgm, y * sgm + z * cgm
         z, x = z * cps - x * sps, z * sps + x * cps
-        ax.plot(x, y, z, leg_color, **kw)
+        ax.scatter(x, y, z, c=leg_color, **kw)
 
         return ax
