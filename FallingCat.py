@@ -55,12 +55,12 @@ class FallingCat:
         else:
             raise RuntimeError("bat init")
 
-        s = solve_bvp(fun, bc, theta, psi, beta)
+        self.sol = solve_bvp(fun, bc, theta, psi, beta)
 
         self.alpha = alpha
-        self.theta = s.x
-        self.psi = s.y[0]
-        self.beta = s.p[0]
+        self.theta = self.sol.x
+        self.psi = self.sol.y[0]
+        self.beta = self.sol.p[0]
 
     def bend(self, theta=None):
         """gamma = angle between A1 and B1
@@ -132,7 +132,7 @@ class FallingCat:
 
         # front legs
         y = -u
-        z, x = 1.1 * np.cos(v), 1.1 * np.sin(v)
+        z, x = np.cos(v), np.sin(v)
         z, x = z * cph - x * sph, z * sph + x * cph
         y, z = y * cgm + z * sgm, -y * sgm + z * cgm
         z, x = z * cps - x * sps, z * sps + x * cps
@@ -140,7 +140,7 @@ class FallingCat:
 
         # rear legs
         y = u
-        z, x = 1.1 * np.cos(v), 1.1 * np.sin(v)
+        z, x = np.cos(v), np.sin(v)
         z, x = z * cph - x * sph, z * sph + x * cph
         y, z = y * cgm - z * sgm, y * sgm + z * cgm
         z, x = z * cps - x * sps, z * sps + x * cps
