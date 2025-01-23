@@ -13,20 +13,21 @@ sqrt2 = np.sqrt(2)
 class FallingCat:
     def __init__(self, JI, alpha, N=128, init=None):
         """
-        inputs are:
-        JI = (moment of intertia along cylinder axis)
-            /(moment of intertia perpendicular to cylinder axis)
-        alpha = angle between K and A1 in fig2 of Kane & Scher
-        N = number of mesh points in theta [0,2pi]
-        init = initial guess as an FallingCat object
-        if init is not None, N is not used
-        outputs as properties of FallingCat object are:
-        beta = angle between K and B1 in fig2 of Kane & Scher
-        theta = angle between A3 and B3
-                as independent variable (shape(N,))
-        psi = angle between spine plane and vertical plane
-              as dependent variable (shape(N,))
-        all angles are in radians
+        Falling cat problem
+
+        Args:
+            JI: moment of intertia along cylinder axis divided by that perpendicular to it
+            alpha: angle between K and A1 in fig2 of Kane & Scher
+            N: number of mesh points in theta [0,2pi]
+            init: initial guess as an FallingCat object
+            if init is not None, N is not used
+            outputs as properties of FallingCat object are:
+            beta: angle between K and B1 in fig2 of Kane & Scher
+            theta: angle between A3 and B3
+                    as independent variable (shape(N,))
+            psi: angle between spine plane and vertical plane
+                as dependent variable (shape(N,))
+            all angles are in radians
         """
         ca, sa = np.cos(alpha), np.sin(alpha)
 
@@ -116,14 +117,14 @@ class FallingCat:
         z, x = np.cos(v), np.sin(v)
         y, z = y * cgm + z * sgm, -y * sgm + z * cgm
         z, x = z * cps - x * sps, z * sps + x * cps
-        ax.plot_surface(x, y, z, color=color)
+        ax.plot_wireframe(x, y, z, color=color, alpha=0.5)
 
         # rear cylinder
         y = u
         z, x = np.cos(v), np.sin(v)
         y, z = y * cgm - z * sgm, y * sgm + z * cgm
         z, x = z * cps - x * sps, z * sps + x * cps
-        ax.plot_surface(x, y, z, color=color)
+        ax.plot_wireframe(x, y, z, color=color, alpha=0.5)
 
         # plot legs
         u = np.asarray([1, 1]) * l / 2
@@ -131,18 +132,18 @@ class FallingCat:
 
         # front legs
         y = -u
-        z, x = np.cos(v), np.sin(v)
+        z, x = 1.1 * np.cos(v), 1.1 * np.sin(v)
         z, x = z * cph - x * sph, z * sph + x * cph
         y, z = y * cgm + z * sgm, -y * sgm + z * cgm
         z, x = z * cps - x * sps, z * sps + x * cps
-        ax.scatter(x, y, z, c=leg_color, **kw)
+        ax.scatter(x, y, z, c=leg_color, depthshade=False, **kw)
 
         # rear legs
         y = u
-        z, x = np.cos(v), np.sin(v)
+        z, x = 1.1 * np.cos(v), 1.1 * np.sin(v)
         z, x = z * cph - x * sph, z * sph + x * cph
         y, z = y * cgm - z * sgm, y * sgm + z * cgm
         z, x = z * cps - x * sps, z * sps + x * cps
-        ax.scatter(x, y, z, c=leg_color, **kw)
+        ax.scatter(x, y, z, c=leg_color, depthshade=False, **kw)
 
         return ax
